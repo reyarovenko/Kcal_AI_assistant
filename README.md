@@ -2,7 +2,7 @@ A Telegram bot that helps users track meals, calculate calories and macronutrien
 
 ⸻
 
-Features
+# Features
 	•	Language selection: English or Ukrainian
 	•	Add meals with type and description
 	•	Automatically calculates calories, protein, fat, and carbs using OpenAI GPT
@@ -13,20 +13,20 @@ Features
 
 ⸻
 
-Project Structure
+# Project Structure
 
 project/
-* bot.py                Main Telegram bot logic
-* gpt_agent.py          GPT-3.5 based nutrition estimation
-* storage.py            Saving and summarizing entries
-* utils.py              Command parsing and localization
-* .env                  API keys
-* data.json             Meal data storage
+* bot.py -               Main Telegram bot logic
+* gpt_agent.py -         GPT-3.5 based nutrition estimation
+* storage.py -           Saving and summarizing entries
+* utils.py -             Command parsing and localization
+* .env-                  API keys
+* data.json -            Meal data storage
 
 
 ⸻
 
-Installation & Run
+# Installation & Run
 
 	1.	Clone the project
 
@@ -56,19 +56,19 @@ python bot.py
 
 ⸻
 
-Technologies Used
-	•	Python 3.10+
-	•	python-telegram-bot
-	•	OpenAI GPT-3.5
-	•	python-dotenv
-	•	Local JSON file storage
+# Technologies Used
+	* Python 3.10+
+	* python-telegram-bot
+	* OpenAI GPT-3.5
+	* python-dotenv
+	* Local JSON file storage
 
 ⸻
 
 
-TODO
-	•	Voice/Image input support
-	•	Use SQLite or Firebase for storage
-	•	Nutrition goals & alerts
+# TODO
+	* Voice input support
+ 	* Image input support
+	* Use SQLite or Firebase for storage
+	* Nutrition goals & alerts
 
-⸻
