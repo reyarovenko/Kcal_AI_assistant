@@ -16,12 +16,12 @@ Features
 Project Structure
 
 project/
-*bot.py                Main Telegram bot logic
-*gpt_agent.py          GPT-3.5 based nutrition estimation
-*storage.py            Saving and summarizing entries
-*utils.py              Command parsing and localization
-*.env                  API keys
-*data.json             Meal data storage
+* bot.py                Main Telegram bot logic
+* gpt_agent.py          GPT-3.5 based nutrition estimation
+* storage.py            Saving and summarizing entries
+* utils.py              Command parsing and localization
+* .env                  API keys
+* data.json             Meal data storage
 
 
 ⸻
