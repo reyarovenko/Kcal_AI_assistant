@@ -1,11 +1,20 @@
 [
   {
-    "date": "2025-06-07",
-    "description": "Сніданок: булка віночок з маком 300г",
+    "date": "2025-06-08",
+    "description": "Сніданок: вівсянка 50г, банан, арахісова паста",
     "meal": "breakfast",
-    "calories": 900,
-    "protein": 21,
-    "fat": 33,
-    "carbs": 135
+    "calories": 415,
+    "protein": 11,
+    "fat": 17,
+    "carbs": 60
+  },
+  {
+    "date": "2025-06-08",
+    "description": "Обід: макарони 200г курятина 120г",
+    "meal": "lunch",
+    "calories": 610,
+    "protein": 44,
+    "fat": 10,
+    "carbs": 90
   }
 ]

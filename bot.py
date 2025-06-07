@@ -225,10 +225,7 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     lang = user_languages[user_id]
 
-    if user_input in ["🗑️ Видалити прийом їжі", "🗑️ Delete a meal"]:
-        await delete_meal_action(update, context)
-        return
-
+    # Handle back button first
     if user_input in ["⬅️ Назад", "⬅️ Back"]:
         if user_id in user_meal_stage:
             del user_meal_stage[user_id]
@@ -237,6 +234,77 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_main_menu(update, context)
         return
 
+    # Handle main menu actions
+    if user_input in ["🗑️ Видалити прийом їжі", "🗑️ Delete a meal"]:
+        await delete_meal_action(update, context)
+        return
+
+    if user_input in ["➕ Додати прийом їжі", "➕ Add a meal"]:
+        await add_meal_action(update, context)
+        return
+
+    if user_input in ["📊 Підсумок за день", "📊 Summary for today"]:
+        today = date.today()
+        entries = get_entries_for_period(today, today)
+        if entries:
+            summary_text = format_summary_table(entries, lang)
+            await update.message.reply_text(summary_text, parse_mode="Markdown")
+        else:
+            await update.message.reply_text("Немає даних за день. Спочатку додайте їжу" if lang == "uk" else
+                                            "No data. Add food first.")
+        await show_main_menu(update, context)
+        return
+
+    # Handle ADD MEAL process
+    if user_id in user_meal_stage:
+        stage = user_meal_stage[user_id]
+
+        if stage.get("awaiting_meal_type", True):
+            if user_input in MEAL_CHOICES[lang]:
+                user_meal_stage[user_id] = {"lang": lang, "meal": user_input, "awaiting_meal_type": False}
+                await update.message.reply_text(
+                    "📝 Тепер введіть, що ви їли (наприклад: вівсянка в сухому вигляді 100г, банан 130г, мед 20г):"
+                    if lang == "uk"
+                    else "📝 Now enter what you ate (e.g. oatmeal not cooked 100g, banana 130g, honey 20g):"
+                )
+                return
+            else:
+                available_choices = ", ".join(MEAL_CHOICES[lang])
+                await update.message.reply_text(
+                    f"Будь ласка, виберіть прийом їжі з кнопок: {available_choices}"
+                    if lang == "uk"
+                    else f"Please select a meal type from the buttons: {available_choices}"
+                )
+                return
+        else:
+            # User has entered food description
+            selected_meal = stage["meal"]
+            full_description = f"{selected_meal}: {user_input}"
+            del user_meal_stage[user_id]
+
+            try:
+                kbju = estimate_kbju(full_description, lang)
+                save_entry(full_description, kbju)
+
+                response = (
+                    f"{MESSAGES[lang]['saved']}:\n{full_description}\n\n"
+                    f"{MESSAGES[lang]['calories']}: {kbju['calories']} ккал\n"
+                    f"{MESSAGES[lang]['protein']}: {kbju['protein']} г\n"
+                    f"{MESSAGES[lang]['fat']}: {kbju['fat']} г\n"
+                    f"{MESSAGES[lang]['carbs']}: {kbju['carbs']} г"
+                )
+                await update.message.reply_text(response)
+            except Exception as e:
+                await update.message.reply_text(
+                    f"Помилка при обчисленні КБЖУ: {str(e)}"
+                    if lang == "uk"
+                    else f"Error calculating calories: {str(e)}"
+                )
+
+            await show_main_menu(update, context)
+            return
+
+    # Handle DELETE MEAL process
     if user_id in user_delete_stage:
         delete_stage = user_delete_stage[user_id]
 
@@ -289,70 +357,7 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await show_main_menu(update, context)
                 return
 
-    if user_input in ["➕ Додати прийом їжі", "➕ Add a meal"]:
-        await add_meal_action(update, context)
-        return
-
-    if user_input in ["📊 Підсумок за день", "📊 Summary for today"]:
-        today = date.today()
-        entries = get_entries_for_period(today, today)
-        if entries:
-            summary_text = format_summary_table(entries, lang)
-            await update.message.reply_text(summary_text, parse_mode="Markdown")
-        else:
-            await update.message.reply_text("Немає даних за день. Спочатку додайте їжу" if lang == "uk" else
-                                            "No data. Add food first.")
-        await show_main_menu(update, context)
-        return
-
-    stage = user_meal_stage.get(user_id)
-    if stage:
-        current_lang = user_languages[user_id]
-
-        if user_input in MEAL_CHOICES[current_lang]:
-            user_meal_stage[user_id] = {"lang": current_lang, "meal": user_input, "awaiting_meal_type": False}
-            await update.message.reply_text(
-                "📝 Тепер введіть, що ви їли (наприклад: вівсянка в сухому вигляді 100г, банан 130г, мед 20г):"
-                if current_lang == "uk"
-                else "📝 Now enter what you ate (e.g. oatmeal not cooked 100g, banana 130g, honey 20g):"
-            )
-            return
-
-        if stage.get("awaiting_meal_type", True):
-            available_choices = ", ".join(MEAL_CHOICES[current_lang])
-            await update.message.reply_text(
-                f"Будь ласка, виберіть прийом їжі з кнопок: {available_choices}"
-                if current_lang == "uk"
-                else f"Please select a meal type from the buttons: {available_choices}"
-            )
-            return
-        else:
-            selected_meal = stage["meal"]
-            full_description = f"{selected_meal}: {user_input}"
-            del user_meal_stage[user_id]
-
-            try:
-                kbju = estimate_kbju(full_description, lang)
-                save_entry(full_description, kbju)
-
-                response = (
-                    f"{MESSAGES[lang]['saved']}:\n{full_description}\n\n"
-                    f"{MESSAGES[lang]['calories']}: {kbju['calories']} ккал\n"
-                    f"{MESSAGES[lang]['protein']}: {kbju['protein']} г\n"
-                    f"{MESSAGES[lang]['fat']}: {kbju['fat']} г\n"
-                    f"{MESSAGES[lang]['carbs']}: {kbju['carbs']} г"
-                )
-                await update.message.reply_text(response)
-            except Exception as e:
-                await update.message.reply_text(
-                    f"Помилка при обчисленні КБЖУ: {str(e)}"
-                    if lang == "uk"
-                    else f"Error calculating calories: {str(e)}"
-                )
-
-            await show_main_menu(update, context)
-            return
-
+    # Handle summary commands
     if user_input.lower().startswith(MESSAGES[lang]["summary_command"]):
         try:
             start_date, end_date = utils.parse_summary_command(user_input, lang)
@@ -366,6 +371,7 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         return
 
+    # Try to detect if input is a meal description
     try:
         if is_meal_description(user_input, lang):
             user_meal_stage[user_id] = {"lang": lang, "awaiting_meal_type": True}
@@ -374,6 +380,7 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         print(f"Error checking meal description: {e}")
 
+    # Default help message
     await update.message.reply_text(
         "🔎 Я рахую КБЖВ для їжі. Обери прийом їжі, напиши, що ти їв(-ла), "
         "для точнішого розрахунку вказуючи вагу та готовність продукту.\n"
