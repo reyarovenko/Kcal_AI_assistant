@@ -277,7 +277,24 @@ async def handle_meal(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
                 return
         else:
-            # User has entered food description
+            # User has entered what should be food description
+            # BUT check if they accidentally entered another meal type
+            if user_input in MEAL_CHOICES[lang]:
+                # User probably wants to change meal type, so update it
+                user_meal_stage[user_id] = {"lang": lang, "meal": user_input, "awaiting_meal_type": False}
+                await update.message.reply_text(
+                    f"✅ Тип прийому їжі змінено на: {user_input}"
+                    if lang == "uk"
+                    else f"✅ Meal type changed to: {user_input}"
+                )
+                await update.message.reply_text(
+                    "📝 Тепер введіть, що ви їли (наприклад: вівсянка в сухому вигляді 100г, банан 130г, мед 20г):"
+                    if lang == "uk"
+                    else "📝 Now enter what you ate (e.g. oatmeal not cooked 100g, banana 130g, honey 20g):"
+                )
+                return
+
+            # Process as normal food description
             selected_meal = stage["meal"]
             full_description = f"{selected_meal}: {user_input}"
             del user_meal_stage[user_id]
