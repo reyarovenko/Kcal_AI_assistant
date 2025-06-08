@@ -11,7 +11,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def clean_json_string(s: str) -> str:
     s = re.sub(r'(\d)[,](\d)', r'\1.\2', s)  # 10,5 → 10.5
-    s = re.sub(r'(\d+(\.\d+)?)[ ]?(г|g|гр|ккал|кал\.?)', r'\1', s, flags=re.IGNORECASE)
+    s = re.sub(r'(\d+(\.\d+)?)[ ]?(г|g|гр|ккал|мл|кал\.?)', r'\1', s, flags=re.IGNORECASE)
     return s
 
 

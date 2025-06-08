@@ -24,26 +24,6 @@ MESSAGES = {
     }
 }
 
-SUMMARY_PATTERNS = {
-    "uk": [
-        r"\bпідсумок\b",
-        r"\bїжа за день\b",
-        r"\bщо я їв\b",
-        r"\bпокажи їжу\b",
-        r"\bсумарно\b",
-        r"\bсьогодні\b",
-        r"\bрезультат\b"
-    ],
-    "en": [
-        r"\bsummary\b",
-        r"\bfood today\b",
-        r"\bwhat i ate\b",
-        r"\bshow me food\b",
-        r"\bdaily total\b",
-        r"\bresult\b"
-    ]
-}
-
 
 def parse_summary_command(text: str, lang: str):
     if lang == "uk" and "з" in text and "по" in text:
