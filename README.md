@@ -9,7 +9,6 @@ A Telegram bot that helps users track meals, calculate calories and macronutrien
 	•	View daily summary
 	•	Delete meal entries from the list
 	•	Stores data locally in data.json
-	•	Understands natural-language commands like summary, food today, що я їв сьогодні
 
 ⸻
 
