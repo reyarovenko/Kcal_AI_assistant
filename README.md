@@ -22,7 +22,6 @@ project/
 * .env-                  API keys
 * data.json -            Meal data storage
 
-
 ⸻
 
 # Installation & Run
@@ -52,22 +51,21 @@ OPENAI_API_KEY=your_openai_api_key
 
 python bot.py
 
-
 ⸻
 
 # Technologies Used
-	* Python 3.10+
-	* python-telegram-bot
-	* OpenAI GPT-3.5
-	* python-dotenv
-	* Local JSON file storage
+
+	• Python 3.10+
+	• python-telegram-bot
+	• OpenAI GPT-3.5
+	• python-dotenv
+	• Local JSON file storage
 
 ⸻
 
-
 # TODO
-	* Voice input support
- 	* Image input support
-	* Use SQLite or Firebase for storage
-	* Nutrition goals & alerts
+	• Voice input support
+ 	• Image input support
+	• Use SQLite or Firebase for storage
+	• Nutrition goals & alerts
 
